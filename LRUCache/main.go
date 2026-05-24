@@ -100,60 +100,6 @@ func (this *LRUCache) insert(node *cacheNode) {
 	}
 }
 
-func (this *LRUCache) swapToTail(node *cacheNode) {
-	if this.head == nil {
-		node.prev = nil
-		node.next = nil
-		this.head = node
-		this.cacheMap[node.key] = node
-		return
-	} else if this.head.key == node.key {
-		this.head.value = node.value
-		if this.tail == nil {
-			return
-		}
-		if this.tail.prev.key == this.head.key {
-			this.tail.prev = nil
-		}
-		this.head.prev = this.tail
-		this.tail.next = this.head
-		this.tail = this.head
-		this.head = this.head.next
-		if this.head != nil {
-			this.head.prev = nil
-		}
-		this.tail.next = nil
-		return
-	} else if this.tail == nil {
-		node.prev = this.head
-		this.head.next = node
-		node.next = nil
-		this.tail = node
-		this.cacheMap[node.key] = node
-		return
-	} else if this.tail.key == node.key {
-		this.tail.value = node.value
-		return
-	}
-
-	oldNode, ok := this.cacheMap[node.key]
-	if !ok {
-		node.prev = this.tail
-		this.tail.next = node
-		this.tail = node
-		this.cacheMap[node.key] = node
-		return
-	}
-	oldNode.prev.next = oldNode.next
-	oldNode.next.prev = oldNode.prev
-
-	node.prev = this.tail
-	node.next = nil
-	this.tail.next = node
-	this.tail = node
-	this.cacheMap[node.key] = node
-}
-
 /*
  * Your LRUCache object will be instantiated and called as such:
  * obj := Constructor(capacity);
